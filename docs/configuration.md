@@ -36,9 +36,6 @@ Configuration for connecting to your NUT (Network UPS Tools) server.
 
 -   `ups`: **(Required)** The name and address of the UPS to monitor.
     -   **Format**: `<ups-name>@<hostname>` (for example: `ups@localhost`).
--   `port`: The port of the NUT server. Defaults to `3493`.
--   `username`: The username for authenticating with the NUT server (optional).
--   `password`: The password for authenticating with the NUT server (optional).
 
 ---
 

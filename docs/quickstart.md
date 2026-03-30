@@ -36,7 +36,7 @@ nut:
   ups: "ups@localhost"
 
 # The directory for the status file should be writable. It will be created if it doesn't exist.
-status_file: "/config/wolnut_state.json" 
+status_file: "/config/wolnut_state.json"
 
 clients:
   - name: "my-pc"
