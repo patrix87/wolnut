@@ -1,37 +1,53 @@
-# WOLNUT
+# WolNut
 
-**WOLNUT** is a lightweight Python service designed to work alongside [NUT (Network UPS Tools)](https://networkupstools.org/) to automatically send Wake-on-LAN (WOL) packets to client systems after a power outage.
+A simplified fork of [hardwarehaven/wolnut](https://github.com/hardwarehaven/wolnut) — a lightweight service that monitors a [NUT](https://networkupstools.org/) UPS and sends Wake-on-LAN packets to bring clients back online after a power outage.
 
-wolnut... get it?
+This version strips the project down to the bare essentials: state is defined as code in the config file, no runtime state file, no CLI framework, no MAC auto-resolution — just UPS monitoring, ping checks, and WOL packets.
 
 ## What It Does
 
-When a UPS (connected to NUT) switches to battery power, WOLNUT:
+- On startup: checks all enabled clients and WOLs any that are offline
+- Continuously monitors UPS status via `upsc`
+- When power is restored after a battery event: waits `restore_delay_sec`, then WOLs offline clients
+- Retries up to 5 times per client with `wol_retry_delay_sec` between attempts
+- Sends a Discord notification if a client fails to come back online
 
-1. Detects the power event via `upsc`
-2. Tracks which clients were online before the outage
-3. Waits for power to be restored and the battery to reach a safe threshold
-4. Sends WOL packets to bring back any systems that powered down
+## Configuration
 
-This helps reboot systems automatically after a controlled shutdown caused by a power loss — especially useful for homelabs, small servers, and media boxes.
+Copy `config.example.yaml` to `/config/config.yaml` (or set `WOLNUT_CONFIG_FILE` env var):
 
----
+```yaml
+log_level: INFO
+nut:
+  ups: "ups@localhost"
+poll_interval: 15
+restore_delay_sec: 30
+wol_retry_delay_sec: 30
+discord_webhook: ""  # optional
+clients:
+  - name: "server1"
+    host: 192.168.0.100
+    mac: "38:f7:cd:c5:87:6b"
+    enabled: true
+```
 
-## Features
+## Docker Compose
 
-- Auto-detect MAC addresses with ARP
-- Tracks online status of clients via ping
-- Supports NUT with or without authentication
-- Persistent state file for post-reboot recovery
-- Runs as a standalone Python service or Docker container
+```yaml
+services:
+  wolnut:
+    build: .
+    container_name: wolnut
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./config:/config
+```
 
----
+## Maintenance
 
-## Quickstart
+Update pinned dependency versions:
 
-See the [Quickstart](docs/quickstart.md) guide.
-
-### Docker Compose
-
-See [docker-compose.yml](docker-compose.yml) for an example docker compose file
-
+```sh
+uv lock --upgrade
+```

@@ -55,7 +55,6 @@ ENV PATH="/app/.venv/bin:$PATH"
 RUN apt-get update && apt-get install -y --no-install-recommends \
     iputils-ping \
     nut-client \
-    net-tools \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -63,4 +62,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=builder /app/.venv /app/.venv
 
 # Run the script
-CMD ["wolnut"]
+CMD ["python", "-m", "wolnut"]

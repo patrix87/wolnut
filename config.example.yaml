@@ -1,24 +1,21 @@
-# copy this to config.yaml befor running wolnut
 log_level: INFO  # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
 
 nut:
-  ups: "ups@localhost"        # Format: <ups-name>@<host>
-  username: "upsmon"          # Optional: omit if NUT server doesn't require auth
-  password: "password"
+  ups: "ups@localhost"  # Format: <ups-name>@<host>
 
-poll_interval: 15             # Poll interval in seconds — should be shorter than the NUT shutdown delay on any client
-status_file: "/config/wolnut_state.json"  # Path to status file, recommended you change this to be outside container if using Docker
+poll_interval: 15        # Seconds between UPS status checks
+restore_delay_sec: 30    # Seconds to wait after power is restored before sending WOL
+wol_retry_delay_sec: 30  # Seconds between WOL retry attempts
+wol_max_retries: 5       # Max WOL attempts per client before giving up
 
-wake_on:
-  restore_delay_sec: 30       # Delay (in seconds) after power is restored before sending WOL
-  min_battery_percent: 25     # Wait until battery reaches this percent before WOL
-  client_timeout_sec: 600     # Time to wait for client to come back online before logging an error
-  reattempt_delay: 30         # Minimum time (in seconds) between WOL attempts per client
+discord_webhook: ""      # Optional: Discord webhook URL for failure notifications
 
 clients:
-  - name: "client 1"                  # Human-readable name
-    host: 192.168.0.100               # IP address preferred for reliability
-    mac: 38:f7:cd:c5:87:6b
+  - name: "client 1"
+    host: 192.168.0.100
+    mac: "38:f7:cd:c5:87:6b"
+    enabled: true
   - name: "client 2"
-    host: hostname.local             # You can use a hostname if it resolves to a reachable interface
-    mac: auto                        # MAC will be resolved using ARP at runtime
+    host: 192.168.0.101
+    mac: "aa:bb:cc:dd:ee:ff"
+    enabled: false  # Will be skipped

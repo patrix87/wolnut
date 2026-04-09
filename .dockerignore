@@ -1,42 +1,15 @@
-# Ignore .github
-.github/
-
-# Ignore LICENSE file
-LICENSE
-
-# Ignore local config
-config.yaml
-
-# Ignore state file
-wolnut_state.json
-
-# Ignore dev/test configs
-*.local.yaml
-*.example.yaml
-
-# Ignore Git stuff
 .git
 .gitignore
-
-# Ignore Python cache and environment
+.vscode/
+.idea/
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-.env
 .venv
-
-# Ignore IDE/editor settings
-.vscode/
-.vscode
-.idea/
-
-# Coverage reports
-pytest.xml
-coverage/
-.coverage
-coverage.xml
-htmlcov/
+config.yaml
+*.example.yaml
+LICENSE
+README.md
+tests/
 
 # pytest code
 tests/

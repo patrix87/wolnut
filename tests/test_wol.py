@@ -1,12 +1,13 @@
-from wolnut import wol
+from unittest.mock import patch
+from wolnut.wol import send_wol_packet
 
 
-def test_send_wol_packet(mocker):
-    # [ TODO - Issue #24 ] - Write tests that assert the appropriate exceptions were raised
+def test_send_wol_packet_success():
+    with patch("wolnut.wol.send_magic_packet") as mock:
+        assert send_wol_packet("aa:bb:cc:dd:ee:ff") is True
+        mock.assert_called_once_with("aa:bb:cc:dd:ee:ff", ip_address="255.255.255.255")
 
-    # Patch send_magic_packet where it's used: in the wolnut.wol module.
-    mock_send_magic_packet = mocker.patch("wolnut.wol.send_magic_packet")
 
-    # Intentionally using invalid values so an exception will be raised if the mock is wrong.
-    wol.send_wol_packet("testing", broadcast_ip="555.555")
-    mock_send_magic_packet.assert_called_once_with("testing", ip_address="555.555")
+def test_send_wol_packet_failure():
+    with patch("wolnut.wol.send_magic_packet", side_effect=Exception("fail")):
+        assert send_wol_packet("aa:bb:cc:dd:ee:ff") is False
