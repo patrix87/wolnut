@@ -25,7 +25,7 @@ Copy `config.example.yaml` to `/config/config.yaml`
 ```yaml
 log_level: INFO
 nut:
-  ups: "ups@localhost"
+  ups: "ups@127.0.0.1"
 poll_interval: 15
 restore_delay_sec: 30
 wol_retry_delay_sec: 30
