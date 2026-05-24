@@ -14,7 +14,12 @@ logger = logging.getLogger("wolnut")
 def send_discord_notification(webhook_url: str, message: str):
     try:
         data = json.dumps({"content": message}).encode()
-        req = Request(webhook_url, data=data, headers={"Content-Type": "application/json"})
+        # Discord returns 403 to the default Python-urllib User-Agent.
+        # Any non-default UA passes.
+        req = Request(webhook_url, data=data, headers={
+            "Content-Type": "application/json",
+            "User-Agent": "wolnut/1.0 (+https://github.com/patrix87/wolnut)",
+        })
         urlopen(req, timeout=10)
         logger.info("Discord notification sent.")
     except Exception as e:
