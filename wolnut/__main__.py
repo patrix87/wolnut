@@ -11,15 +11,20 @@ from wolnut.wol import send_wol_packet
 
 logger = logging.getLogger("wolnut")
 
+
 def send_discord_notification(webhook_url: str, message: str):
     try:
         data = json.dumps({"content": message}).encode()
         # Discord returns 403 to the default Python-urllib User-Agent.
         # Any non-default UA passes.
-        req = Request(webhook_url, data=data, headers={
-            "Content-Type": "application/json",
-            "User-Agent": "wolnut/1.0 (+https://github.com/patrix87/wolnut)",
-        })
+        req = Request(
+            webhook_url,
+            data=data,
+            headers={
+                "Content-Type": "application/json",
+                "User-Agent": "wolnut/1.0 (+https://github.com/patrix87/wolnut)",
+            },
+        )
         urlopen(req, timeout=10)
         logger.info("Discord notification sent.")
     except Exception as e:
@@ -40,7 +45,10 @@ def wake_clients(config):
         for attempt in range(1, config.wol_max_retries + 1):
             logger.info(
                 "Sending WOL to %s (%s) — attempt %d/%d",
-                client.name, client.mac, attempt, config.wol_max_retries,
+                client.name,
+                client.mac,
+                attempt,
+                config.wol_max_retries,
             )
             send_wol_packet(client.mac)
             time.sleep(config.wol_retry_delay_sec)

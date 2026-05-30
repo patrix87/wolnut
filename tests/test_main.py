@@ -6,9 +6,12 @@ from wolnut.config import WolnutConfig, NutConfig, ClientConfig
 def _make_config(**overrides) -> WolnutConfig:
     return WolnutConfig(
         nut=overrides.get("nut", NutConfig(ups="ups@localhost")),
-        clients=overrides.get("clients", [
-            ClientConfig(name="srv1", host="10.0.0.1", mac="aa:bb:cc:dd:ee:ff"),
-        ]),
+        clients=overrides.get(
+            "clients",
+            [
+                ClientConfig(name="srv1", host="10.0.0.1", mac="aa:bb:cc:dd:ee:ff"),
+            ],
+        ),
         poll_interval=overrides.get("poll_interval", 10),
         restore_delay_sec=overrides.get("restore_delay_sec", 0),
         wol_retry_delay_sec=overrides.get("wol_retry_delay_sec", 0),
@@ -53,7 +56,9 @@ def test_wake_clients_retries_5_times(mock_ping, mock_wol, mock_sleep, mock_disc
 @patch("wolnut.__main__.time.sleep", return_value=None)
 @patch("wolnut.__main__.send_wol_packet", return_value=True)
 @patch("wolnut.__main__.is_client_online", return_value=False)
-def test_wake_clients_sends_discord_on_failure(mock_ping, mock_wol, mock_sleep, mock_discord):
+def test_wake_clients_sends_discord_on_failure(
+    mock_ping, mock_wol, mock_sleep, mock_discord
+):
     config = _make_config(discord_webhook="https://discord.com/api/webhooks/test")
     wake_clients(config)
     mock_discord.assert_called_once()
@@ -64,7 +69,9 @@ def test_wake_clients_sends_discord_on_failure(mock_ping, mock_wol, mock_sleep, 
 @patch("wolnut.__main__.time.sleep", return_value=None)
 @patch("wolnut.__main__.send_wol_packet", return_value=True)
 @patch("wolnut.__main__.is_client_online", return_value=False)
-def test_wake_clients_no_discord_without_webhook(mock_ping, mock_wol, mock_sleep, mock_discord):
+def test_wake_clients_no_discord_without_webhook(
+    mock_ping, mock_wol, mock_sleep, mock_discord
+):
     config = _make_config(discord_webhook="")
     wake_clients(config)
     mock_discord.assert_not_called()
@@ -74,9 +81,13 @@ def test_wake_clients_no_discord_without_webhook(mock_ping, mock_wol, mock_sleep
 @patch("wolnut.__main__.send_wol_packet", return_value=True)
 @patch("wolnut.__main__.is_client_online")
 def test_wake_clients_skips_disabled(mock_ping, mock_wol, mock_sleep):
-    config = _make_config(clients=[
-        ClientConfig(name="srv1", host="10.0.0.1", mac="aa:bb:cc:dd:ee:ff", enabled=False),
-    ])
+    config = _make_config(
+        clients=[
+            ClientConfig(
+                name="srv1", host="10.0.0.1", mac="aa:bb:cc:dd:ee:ff", enabled=False
+            ),
+        ]
+    )
     wake_clients(config)
     mock_ping.assert_not_called()
     mock_wol.assert_not_called()

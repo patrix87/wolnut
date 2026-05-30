@@ -82,23 +82,46 @@ def test_enabled_defaults_to_true(tmp_path):
     assert config.clients[0].enabled is True
 
 
-@pytest.mark.parametrize("raw,error_match", [
-    ({}, "nut.ups"),
-    ({"nut": {}}, "nut.ups"),
-    ({"nut": {"ups": "x"}}, "clients"),
-    ({"nut": {"ups": "x"}, "clients": "not-a-list"}, "clients"),
-    ({"nut": {"ups": "x"}, "clients": [{"host": "h", "mac": "aa:bb:cc:dd:ee:ff"}]}, "name"),
-    ({"nut": {"ups": "x"}, "clients": [{"name": "n", "mac": "aa:bb:cc:dd:ee:ff"}]}, "host"),
-    ({"nut": {"ups": "x"}, "clients": [{"name": "n", "host": "h"}]}, "mac"),
-    ({"nut": {"ups": "x"}, "clients": [{"name": "n", "host": "h", "mac": "bad"}]}, "MAC"),
-])
+@pytest.mark.parametrize(
+    "raw,error_match",
+    [
+        ({}, "nut.ups"),
+        ({"nut": {}}, "nut.ups"),
+        ({"nut": {"ups": "x"}}, "clients"),
+        ({"nut": {"ups": "x"}, "clients": "not-a-list"}, "clients"),
+        (
+            {
+                "nut": {"ups": "x"},
+                "clients": [{"host": "h", "mac": "aa:bb:cc:dd:ee:ff"}],
+            },
+            "name",
+        ),
+        (
+            {
+                "nut": {"ups": "x"},
+                "clients": [{"name": "n", "mac": "aa:bb:cc:dd:ee:ff"}],
+            },
+            "host",
+        ),
+        ({"nut": {"ups": "x"}, "clients": [{"name": "n", "host": "h"}]}, "mac"),
+        (
+            {
+                "nut": {"ups": "x"},
+                "clients": [{"name": "n", "host": "h", "mac": "bad"}],
+            },
+            "MAC",
+        ),
+    ],
+)
 def test_validate_rejects_bad_config(raw, error_match):
     with pytest.raises(ValueError, match=error_match):
         _validate(raw)
 
 
 def test_validate_accepts_good_config():
-    _validate({
-        "nut": {"ups": "ups@localhost"},
-        "clients": [{"name": "n", "host": "h", "mac": "aa:bb:cc:dd:ee:ff"}],
-    })
+    _validate(
+        {
+            "nut": {"ups": "ups@localhost"},
+            "clients": [{"name": "n", "host": "h", "mac": "aa:bb:cc:dd:ee:ff"}],
+        }
+    )

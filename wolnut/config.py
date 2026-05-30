@@ -53,12 +53,14 @@ def load_config(config_path: str):
 
     clients = []
     for c in raw["clients"]:
-        clients.append(ClientConfig(
-            name=c["name"],
-            host=c["host"],
-            mac=c["mac"],
-            enabled=c.get("enabled", True),
-        ))
+        clients.append(
+            ClientConfig(
+                name=c["name"],
+                host=c["host"],
+                mac=c["mac"],
+                enabled=c.get("enabled", True),
+            )
+        )
 
     config = WolnutConfig(
         nut=NutConfig(ups=raw["nut"]["ups"]),
@@ -82,7 +84,11 @@ def load_config(config_path: str):
 def _validate(raw: dict):
     if not isinstance(raw, dict):
         raise ValueError("Config must be a YAML mapping")
-    if "nut" not in raw or not isinstance(raw.get("nut"), dict) or "ups" not in raw["nut"]:
+    if (
+        "nut" not in raw
+        or not isinstance(raw.get("nut"), dict)
+        or "ups" not in raw["nut"]
+    ):
         raise ValueError("Missing required field: nut.ups")
     if "clients" not in raw or not isinstance(raw["clients"], list):
         raise ValueError("Missing or invalid 'clients' list")
@@ -95,4 +101,3 @@ def _validate(raw: dict):
             raise ValueError(f"Client '{c['name']}': missing 'mac'")
         if not _MAC_PATTERN.match(c["mac"]):
             raise ValueError(f"Client '{c['name']}': invalid MAC format: {c['mac']}")
-

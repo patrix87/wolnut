@@ -43,4 +43,3 @@ def is_client_online(host: str) -> bool:
     except Exception as e:
         logger.warning("Failed to ping %s: %s", host, e)
         return False
-
