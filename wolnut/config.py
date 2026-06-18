@@ -20,6 +20,7 @@ class ClientConfig:
     host: str
     mac: str
     enabled: bool = True
+    wol_broadcast: str = "255.255.255.255"
 
 
 @dataclass
@@ -59,6 +60,7 @@ def load_config(config_path: str):
                 host=c["host"],
                 mac=c["mac"],
                 enabled=c.get("enabled", True),
+                wol_broadcast=c.get("wol_broadcast", "255.255.255.255"),
             )
         )
 

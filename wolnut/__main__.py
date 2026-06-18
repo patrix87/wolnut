@@ -50,7 +50,7 @@ def wake_clients(config):
                 attempt,
                 config.wol_max_retries,
             )
-            send_wol_packet(client.mac)
+            send_wol_packet(client.mac, client.wol_broadcast)
             time.sleep(config.wol_retry_delay_sec)
 
             if is_client_online(client.host):

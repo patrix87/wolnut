@@ -37,6 +37,24 @@ clients:
     enabled: true
 ```
 
+`host` is the address used for the online (ping) check; `mac` is the NIC the
+magic packet wakes. By default the packet is broadcast to `255.255.255.255`.
+
+Set the optional per-client `wol_broadcast` when the WOL-capable NIC lives on a
+different subnet than the address you ping (for example a dual-homed NAS whose
+10G interface answers pings but does not support WOL, while its 2.5G interface
+does). Point `host` at the pingable address, `mac` at the WOL-capable NIC, and
+`wol_broadcast` at that NIC's subnet-directed broadcast:
+
+```yaml
+clients:
+  - name: "nas"
+    host: 192.168.1.7          # pingable (10G NIC, no WOL)
+    mac: "aa:bb:cc:dd:ee:00"   # WOL-capable NIC (2.5G)
+    wol_broadcast: 10.0.0.255  # directed broadcast for that NIC's subnet
+    enabled: true
+```
+
 ## Docker Compose
 
 ```yaml

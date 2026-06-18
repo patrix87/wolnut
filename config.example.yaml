@@ -19,3 +19,12 @@ clients:
     host: 192.168.0.101
     mac: "aa:bb:cc:dd:ee:ff"
     enabled: false  # Will be skipped
+  # Use wol_broadcast when the WOL-capable NIC is on a different subnet
+  # than the address you ping. host is the online check; wol_broadcast is
+  # where the magic packet is sent (a subnet-directed broadcast, e.g.
+  # 10.0.0.255). Defaults to 255.255.255.255.
+  - name: "nas"
+    host: 192.168.1.7      # pingable address (10G NIC, no WOL support)
+    mac: "aa:bb:cc:dd:ee:00"  # MAC of the WOL-capable NIC (2.5G, 10.0.0.90)
+    wol_broadcast: 10.0.0.255
+    enabled: true

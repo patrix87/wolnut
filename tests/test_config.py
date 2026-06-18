@@ -66,6 +66,29 @@ def test_load_full_config(tmp_path):
     assert config.clients[1].enabled is False
 
 
+def test_wol_broadcast_defaults_to_global_broadcast(tmp_path):
+    path = _write_config(tmp_path, MINIMAL_CONFIG)
+    config = load_config(path)
+    assert config is not None
+    assert config.clients[0].wol_broadcast == "255.255.255.255"
+
+
+def test_wol_broadcast_override(tmp_path):
+    content = """\
+nut:
+  ups: "ups@localhost"
+clients:
+  - name: "nas"
+    host: "192.168.1.7"
+    mac: "aa:bb:cc:dd:ee:ff"
+    wol_broadcast: "10.0.0.255"
+"""
+    path = _write_config(tmp_path, content)
+    config = load_config(path)
+    assert config is not None
+    assert config.clients[0].wol_broadcast == "10.0.0.255"
+
+
 def test_load_config_file_not_found():
     assert load_config("/nonexistent/config.yaml") is None
 
